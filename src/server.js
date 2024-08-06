@@ -23,7 +23,7 @@ export async function setupServer() {
   app.get('/contacts', async (req, res) => {
     try {
       const contacts = await Contact.find();
-      res.status(200).send(contacts);
+      res.status(200).json({ data: contacts });
     } catch (error) {
       console.log(error);
       res.status(500).send({ message: 'Oops, our faults' });
@@ -32,10 +32,11 @@ export async function setupServer() {
 
   app.get('/contacts/:id', async (req, res) => {
     const { id } = req.params;
-    const contacts = await Contact.findById(id);
-    if (contacts === null) {
+    const contact = await Contact.findById(id);
+    if (contact === null) {
       return res.status(404).send({ message: 'Contact not found' });
     }
+    res.status(200).json({ data: contact });
   });
 
   app.use((req, res) => {

@@ -1,15 +1,17 @@
-import { HttpError } from 'http-errors';
+import { isHttpError } from 'http-errors';
 
 export const errorHandler = async (err, req, res, next) => {
-  if (err instanceof HttpError) {
-    res.status(err.status).json({
+  if (isHttpError(err) === true) {
+    res.status(err.status).send({
       status: err.status,
-      message: err.name,
-      data: err,
+      message: err.message,
     });
-    return;
   }
-  res.status(500).json({
+
+  console.error(err);
+
+  res.status(500).send({
+    status: 500,
     message: 'Something went wrong',
     error: err.message,
   });

@@ -6,12 +6,13 @@ export const getContactsController = async (req, res) => {
   res.status(200).send(contacts);
 };
 
-export const getContactByIdController = async ({id}, res) => {
+export const getContactByIdController = async (req, res, next) => {
+  const { id } = req.params;
   const contact = await Contact.findById(id);
 
   if (contact === null) {
-    throw createHttpError(404, 'Contact not found');
+    return next(createHttpError(404, 'Contact not found'));
   }
 
-  res.send(contact);
+  res.status(200).send(contact);
 };

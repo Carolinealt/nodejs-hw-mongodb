@@ -23,7 +23,11 @@ export async function setupServer() {
   app.get('/contacts', async (req, res) => {
     try {
       const contacts = await Contact.find();
-      res.status(200).json({ data: contacts });
+      res.status(200).json({
+        status: 200,
+        message: 'Successfully found contacts!',
+        data: contacts,
+      });
     } catch (error) {
       console.log(error);
       res.status(500).send({ message: 'Oops, our faults' });

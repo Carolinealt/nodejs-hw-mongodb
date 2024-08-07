@@ -21,7 +21,7 @@ export async function setupServer() {
       },
     }),
   );
-
+  app.use(express.json());
   app.use('/contacts', contactsRouter);
 
   app.use('*', notFoundHandler);

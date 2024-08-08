@@ -40,7 +40,11 @@ export async function setupServer() {
     if (contact === null) {
       return res.status(404).send({ message: 'Contact not found' });
     }
-    res.status(200).json({ data: contact });
+    res.status(200).json({
+      status: 200,
+      message: `Successfully found contact with id ${id}`,
+      data: contact,
+    });
   });
 
   app.use((req, res) => {

@@ -28,7 +28,6 @@ export async function setupServer() {
   app.use(errorHandler);
 
   try {
-    await initMongoDb();
     app.listen(PORT, () => {
       console.log(`Server running on port ${PORT}`);
     });

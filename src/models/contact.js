@@ -1,4 +1,4 @@
-import { mongoose } from 'mongoose';
+import { mongoose, version } from 'mongoose';
 
 const contactSchema = new mongoose.Schema(
   {
@@ -23,7 +23,8 @@ const contactSchema = new mongoose.Schema(
     },
   },
   {
-    Timestamp: true,
+    timestamps: true,
+    versionKey: false,
   },
 );
 

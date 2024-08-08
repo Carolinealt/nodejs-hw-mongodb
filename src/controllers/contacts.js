@@ -2,7 +2,7 @@ import {
   createContact,
   deleteContact,
   updateContact,
-} from '../../services/contacts.js';
+} from '../services/contacts.js';
 import { Contact } from '../models/contact.js';
 import createHttpError from 'http-errors';
 
@@ -23,12 +23,22 @@ export const getContactByIdController = async (req, res, next) => {
 };
 
 export const createContactController = async (req, res, next) => {
-  const { id } = req.body;
-  const contact = await createContact(id);
+  const { name, phoneNumber, email, isFavourite, contactType } = req.body;
+
+  const contact = {
+    name,
+    phoneNumber,
+    email,
+    isFavourite,
+    contactType,
+  };
+
+  const createdContact = await createContact(contact);
+  console.log(createdContact);
   res.send({
     status: 201,
     message: 'Successfully created a contact!',
-    data: contact,
+    data: createdContact,
   });
 };
 
@@ -39,12 +49,13 @@ export const deleteContactController = async (req, res, next) => {
     next(createHttpError(404, 'Contact not found'));
     return;
   }
-  res.status(204).send();
+  res.status(204).end();
 };
 
 export const upsertContactController = async (req, res, next) => {
   const { id } = req.params;
   const result = await updateContact(id, req.body, { upsert: true });
+  console.log(req.body);
 
   if (!result) {
     next(createHttpError(404, 'Contact not found'));

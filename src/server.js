@@ -23,7 +23,6 @@ export async function setupServer() {
   app.use(express.json());
   app.use('/', (req, res, next) => {
     res.send('Hello, world!');
-    next();
   });
   app.use('/contacts', contactsRouter);
 

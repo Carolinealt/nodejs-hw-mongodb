@@ -1,6 +1,5 @@
 import express from 'express';
 import dotenv from 'dotenv';
-import { initMongoDb } from './db/initMongoDb.js';
 import { env } from './utils/env.js';
 import pino from 'pino-http';
 import cors from 'cors';
@@ -22,7 +21,9 @@ export async function setupServer() {
     }),
   );
   app.use(express.json());
-  app.use('/', console.log('Hello, world!'));
+  app.use('/', (req, res, next) => {
+    res.send('Hello, world!');
+  });
   app.use('/contacts', contactsRouter);
 
   app.use('*', notFoundHandler);

@@ -22,6 +22,7 @@ export async function setupServer() {
     }),
   );
   app.use(express.json());
+  app.use('/', console.log('Hello, world!'));
   app.use('/contacts', contactsRouter);
 
   app.use('*', notFoundHandler);

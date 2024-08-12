@@ -21,9 +21,6 @@ export async function setupServer() {
     }),
   );
   app.use(express.json());
-  app.use('/', (req, res, next) => {
-    console.log('Hello, world');
-  });
   app.use('/contacts', contactsRouter);
 
   app.use('*', notFoundHandler);

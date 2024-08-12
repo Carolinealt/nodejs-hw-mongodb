@@ -1,5 +1,5 @@
 import createHttpError from 'http-errors';
 
 export const notFoundHandler = async (req, res, next) => {
-  next(new createHttpError(404, { message: 'Page not found' }));
+  res.status(404).json({ message: 'Page not found' });
 };

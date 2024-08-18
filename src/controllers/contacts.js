@@ -21,7 +21,7 @@ export const getContactByIdController = async (req, res, next) => {
 
 
   if (contact === null) {
-    return next(createHttpError(404, { status: 404, message: 'Contact not found'}));
+    return next(createHttpError(404, { status: 404, message: 'Contact not found' }));
   }
 
   res.status(200).json({
@@ -79,7 +79,7 @@ export const upsertContactController = async (req, res, next) => {
   });
 };
 
-export const patchContactController = async (req, res) => {
+export const patchContactController = async (req, res, next) => {
   const { id } = req.params;
   const result = await updateContact(id, req.body);
   if (!result) {
@@ -89,6 +89,6 @@ export const patchContactController = async (req, res) => {
   res.json({
     status: 200,
     message: `Successfully patched a student!`,
-    data: result.student,
+    data: result.contact,
   });
 };

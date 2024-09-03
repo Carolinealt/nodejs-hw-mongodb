@@ -5,8 +5,12 @@ import {
 } from '../services/contacts.js';
 import { Contact } from '../models/contact.js';
 import createHttpError from 'http-errors';
+import { parsePaginationParams } from '../utils/parsePaginationParams.js';
 
 export const getContactsController = async (req, res) => {
+  const { page, perPage } = parsePaginationParams(req.query);
+  console.log(page, perPage);
+
   const contacts = await Contact.find();
   res.status(200).send({
     status: 200,

@@ -27,3 +27,10 @@ export const updateContact = async (contactId, payload, options = {}) => {
     isNew: Boolean(rawResult?.lastErrorObject?.upserted),
   };
 };
+
+export const getAllContacts = async({page, perPage}) =>{
+  const limit = perPage;
+  const skip = (page - 1);
+
+  const contactsQuerry = ContactsC
+}

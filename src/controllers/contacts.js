@@ -1,9 +1,10 @@
 import {
+  getContacts,
+  getContactById,
   createContact,
   deleteContact,
   updateContact,
 } from '../services/contacts.js';
-import { Contact } from '../models/contact.js';
 import createHttpError from 'http-errors';
 import { parsePaginationParams } from '../utils/parsePaginationParams.js';
 
@@ -11,7 +12,7 @@ export const getContactsController = async (req, res) => {
   const { page, perPage } = parsePaginationParams(req.query);
   console.log(page, perPage);
 
-  const contacts = await Contact.find();
+  const contacts = await getContacts();
   res.status(200).send({
     status: 200,
     message: 'Successfully found contacts!',
@@ -21,7 +22,7 @@ export const getContactsController = async (req, res) => {
 
 export const getContactByIdController = async (req, res, next) => {
   const { id } = req.params;
-  const contact = await Contact.findById(id);
+  const contact = await getContactById(id);
 
   if (contact === null) {
     return next(createHttpError(404, { status: 404, message: 'Contact not found' }));

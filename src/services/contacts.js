@@ -1,5 +1,13 @@
 import { Contact } from '../models/contact.js';
 
+export const getContacts = async () => {
+  return await Contact.find();
+}
+
+export const getContactById = async (contactId) => {
+  return await Contact.findById(contactId);
+}
+
 export const createContact = async (payload) => {
   const contact = await Contact.create(payload);
   return contact;

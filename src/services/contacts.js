@@ -26,7 +26,9 @@ export const getContacts = async ({ page, perPage, sortBy, sortOrder, filter: { 
 }
 
 export const getContactById = async (contactId) => {
-  return await Contact.findById(contactId);
+  console.log({ contactId });
+
+  return await Contact.findOne(contactId);
 }
 
 export const createContact = async (payload) => {

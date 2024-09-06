@@ -3,7 +3,8 @@ import createHttpError from 'http-errors';
 import { User } from '../models/user.js';
 import bcrypt from 'bcrypt'
 import { Session } from '../models/session.js';
-import { ACCESS_TOKEN_TTL, REFRESH_TOKEN_TTL } from "../constants/index.js";
+import { ACCESS_TOKEN_TTL, REFRESH_TOKEN_TTL, SMTP } from "../constants/index.js";
+import { sendMail } from "../utils/mail.js";
 export const registerUser = async (payload) => {
     const maybeUser = await User.findOne({ email: payload.email });
 
@@ -46,7 +47,7 @@ export const logoutUser = async (sessionId) => {
 
 export const refreshtUserSession = async (sessionId, refreshToken) => {
     const session = await Session.findOne({ _id: sessionId, refreshToken });
-console.log({session});
+    console.log({ session });
 
     if (session === null) {
         throw createHttpError(401, "Session not found");
@@ -65,5 +66,22 @@ console.log({session});
         accessTokenValidUntil: new Date(Date.now() + ACCESS_TOKEN_TTL),
         refreshTokenValidUntil: new Date(Date.now() + REFRESH_TOKEN_TTL),
     })
+
+}
+
+export const requestResetEmail = async (email) => {
+    const user = User.findOne({ email });
+    if (user === null) {
+        throw createHttpError(404, "User not found");
+    }
+
+    await sendMail({
+        from: SMTP.FROM_EMAIL,
+        to: email,
+        subject: "Reset your password",
+        html: "<h1>Reset your password</h1>"
+    })
+
+
 
 }

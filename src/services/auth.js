@@ -84,18 +84,22 @@ export const requestResetEmail = async (email) => {
         email: user.email,
     }, process.env.JWT_SECRET, { expiresIn: "15m" });
 
-    const templateSoutce = fs.readFileSync(path.resolve("src/templates/reset-password.hbs"), { encoding: "utf8" });
+    const templateSource = fs.readFileSync(path.resolve("src/templates/reset-password.hbs"), { encoding: "utf8" });
 
-    const template = handlebars.compile(templateSoutce);
+    const template = handlebars.compile(templateSource);
 
     const html = template({ name: user.name, resetToken })
 
-    await sendMail({
+    const isSend = await sendMail({
         from: SMTP.FROM_EMAIL,
         to: email,
         subject: "Reset your password",
         html
-    })
+    });
+
+    if (isSend.rejected.length !== 0) {
+        throw createHttpError(500, "Failed to send the email, please try again later.");
+    }
 }
 
 export const resetPassword = async (password, token) => {

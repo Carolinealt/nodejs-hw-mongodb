@@ -7,7 +7,9 @@ import { ACCESS_TOKEN_TTL, REFRESH_TOKEN_TTL, SMTP } from "../constants/index.js
 import { sendMail } from "../utils/mail.js";
 import jwt from 'jsonwebtoken';
 import handlebars from 'handlebars';
-import fs from 'node:fs'
+import fs from 'node:fs';
+import path from 'node:path';
+
 export const registerUser = async (payload) => {
     const maybeUser = await User.findOne({ email: payload.email });
 
@@ -50,7 +52,6 @@ export const logoutUser = async (sessionId) => {
 
 export const refreshtUserSession = async (sessionId, refreshToken) => {
     const session = await Session.findOne({ _id: sessionId, refreshToken });
-    console.log({ session });
 
     if (session === null) {
         throw createHttpError(401, "Session not found");
@@ -73,7 +74,7 @@ export const refreshtUserSession = async (sessionId, refreshToken) => {
 }
 
 export const requestResetEmail = async (email) => {
-    const user = User.findOne({ email });
+    const user = await User.findOne({ email });
     if (user === null) {
         throw createHttpError(404, "User not found");
     }
@@ -93,7 +94,7 @@ export const requestResetEmail = async (email) => {
         from: SMTP.FROM_EMAIL,
         to: email,
         subject: "Reset your password",
-        html: `<p>Pleade, open this <a href="http://www.google.com/reset-password?token=${resetToken}">link</a></p>`
+        html
     })
 }
 

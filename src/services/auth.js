@@ -6,6 +6,7 @@ import { Session } from '../models/session.js';
 import { ACCESS_TOKEN_TTL, REFRESH_TOKEN_TTL } from "../constants/index.js";
 export const registerUser = async (payload) => {
     const maybeUser = await User.findOne({ email: payload.email });
+    console.log(payload);
 
     if (maybeUser !== null) {
         throw createHttpError(409, "Email in use");
@@ -44,9 +45,13 @@ export const logoutUser = async (sessionId) => {
     return await Session.deleteOne({ _id: sessionId })
 }
 
+export const findSessionByAccessToken = async (accessToken) => Session.findOne({ accessToken });
+export const findUser = async (filter) => await User.findOne(filter);
+
+
 export const refreshtUserSession = async (sessionId, refreshToken) => {
     const session = await Session.findOne({ _id: sessionId, refreshToken });
-console.log({session});
+    console.log({ session });
 
     if (session === null) {
         throw createHttpError(401, "Session not found");

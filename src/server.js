@@ -8,7 +8,6 @@ import contactsRouter from './routers/contacts.js';
 import { errorHandler } from './middlewares/errorHandler.js';
 import { notFoundHandler } from './middlewares/notFoundHandler.js';
 import cookieParser from 'cookie-parser';
-import { authenticate } from './middlewares/auth.js';
 dotenv.config();
 
 const PORT = Number(env('PORT', '8080'));
@@ -26,7 +25,7 @@ export async function setupServer() {
   );
   app.use(express.json());
   app.use('/auth', authRouter);
-  app.use('/contacts', authenticate, contactsRouter);
+  app.use('/contacts', contactsRouter);
 
   app.use('*', notFoundHandler);
   app.use(errorHandler);

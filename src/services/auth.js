@@ -12,6 +12,7 @@ import path from 'node:path';
 
 export const registerUser = async (payload) => {
     const maybeUser = await User.findOne({ email: payload.email });
+    console.log(payload);
 
     if (maybeUser !== null) {
         throw createHttpError(409, "Email in use");
@@ -49,6 +50,10 @@ export const loginUser = async ({ email, password }) => {
 export const logoutUser = async (sessionId) => {
     return await Session.deleteOne({ _id: sessionId })
 }
+
+export const findSessionByAccessToken = async (accessToken) => Session.findOne({ accessToken });
+export const findUser = async (filter) => await User.findOne(filter);
+
 
 export const refreshtUserSession = async (sessionId, refreshToken) => {
     const session = await Session.findOne({ _id: sessionId, refreshToken });

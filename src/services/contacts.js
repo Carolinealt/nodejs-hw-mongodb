@@ -25,8 +25,8 @@ export const getContacts = async ({ page, perPage, sortBy, sortOrder, filter: { 
   return { data: contacts, page, perPage, totalItems: count, hasNextPage: totalPages - page > 0, hasPreviousPage: page > 1 };
 }
 
-export const getContactById = async (contactId) => {
-  return await Contact.findOne({ _id: contactId });
+export const getContactById = async (contactId, userId) => {
+  return await Contact.findOne({ _id: contactId, userId });
 }
 
 export const createContact = async (payload) => {
@@ -34,14 +34,15 @@ export const createContact = async (payload) => {
   return contact;
 };
 
-export const deleteContact = async (contactId) => {
-  const contact = await Contact.findOneAndDelete({ _id: contactId });
+export const deleteContact = async (contactId, userId) => {
+  const contact = await Contact.findOneAndDelete({ _id: contactId, userId });
   return contact;
 };
 
-export const updateContact = async (contactId, payload, options = {}) => {
+export const updateContact = async (contactId, userId, payload, options = {}) => {
   const rawResult = await Contact.findOneAndUpdate(
     { _id: contactId },
+    userId,
     payload,
     {
       new: true,

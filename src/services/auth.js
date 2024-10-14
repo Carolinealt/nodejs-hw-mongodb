@@ -119,14 +119,15 @@ export const resetPassword = async (password, token) => {
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        await User.findOneAndUpdate({ _id: user._id }, { password: hashedPassword });
+        await User.findOneAndUpdate({ _id: user._id }, { password: hashedPassword }); 
+        await Session.deleteOne({ userId: user._id })
 
     } catch (error) {
         if (
             error.name === 'TokenExpiredError' ||
             error.name === 'JsonWebTokenError'
         ) {
-            throw createHttpError(401, 'Token error');
+            throw createHttpError(401, 'Token errorToken is expired or invalid.');
         }
 
         throw error;

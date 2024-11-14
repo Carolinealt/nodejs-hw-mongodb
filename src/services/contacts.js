@@ -41,8 +41,7 @@ export const deleteContact = async (contactId, userId) => {
 
 export const updateContact = async (contactId, userId, payload, options = {}) => {
   const rawResult = await Contact.findOneAndUpdate(
-    { _id: contactId },
-    userId,
+    { _id: contactId, userId },
     payload,
     {
       new: true,
@@ -50,6 +49,7 @@ export const updateContact = async (contactId, userId, payload, options = {}) =>
       ...options,
     },
   );
+
   if (!rawResult || !rawResult.value) return null;
 
   return {

@@ -7,20 +7,50 @@ import { ACCESS_TOKEN_TTL, REFRESH_TOKEN_TTL, SMTP } from "../constants/index.js
 import { sendMail } from "../utils/mail.js";
 import jwt from 'jsonwebtoken';
 import handlebars from 'handlebars';
-import fs from 'node:fs';
-import path from 'node:path';
+import * as fs from 'node:fs/promises';
+import * as path from 'node:path';
+import { env } from "../utils/env.js";
+import { createJwtToken, verifyToken } from "../utils/jwt.js";
+import { TEMPLATES_DIR } from '../constants/index.js'
+const verifyEmailTemplatePath = path.join(TEMPLATES_DIR, "verify-email.hbs");
+const verifyEmailTemplateSource = await fs.readFile(verifyEmailTemplatePath, "utf-8");
 
+const appDomain = env("APP_DOMAIN");
 export const registerUser = async (payload) => {
     const maybeUser = await User.findOne({ email: payload.email });
-    console.log(payload);
 
     if (maybeUser !== null) {
         throw createHttpError(409, "Email in use");
     }
 
-    payload.password = await bcrypt.hash(payload.password, 10)
+    payload.password = await bcrypt.hash(payload.password, 10);
+
+    const jwtToken = createJwtToken({ email: payload.email });
+    const template = handlebars.compile(verifyEmailTemplateSource);
+    const html = template({ appDomain, jwtToken });
+    const verifyEmail = {
+        from: SMTP.FROM_EMAIL,
+        to: payload.email,
+        subject: "Verify email",
+        html,
+    }
+
+    await sendMail(verifyEmail);
 
     return User.create(payload);
+}
+
+export const verifyEmail = async (token) => {
+    const { data, error } = verifyToken(token);
+
+    if (error) {
+        throw createHttpError(401, "Token invalid")
+    }
+
+    const user = await User.findOne({ email: data.email });
+
+    await User.findOneAndUpdate({ _id: user._id }, { verify: true });
+
 }
 
 export const loginUser = async ({ email, password }) => {
@@ -28,6 +58,11 @@ export const loginUser = async ({ email, password }) => {
 
     if (maybeUser === null) {
         throw createHttpError(401, "User not found");
+    }
+
+    if (!maybeUser.verify) {
+        throw createHttpError(401, "Email not veriy");
+
     }
 
     const isMatch = await bcrypt.compare(password, maybeUser.password);
@@ -89,16 +124,16 @@ export const requestResetEmail = async (email) => {
         email: user.email,
     }, process.env.JWT_SECRET, { expiresIn: "15m" });
 
-    const templateSource = fs.readFileSync(path.resolve("src/templates/reset-password.hbs"), { encoding: "utf8" });
+    const templateSource = await fs.readFile(path.resolve("src/templates/reset-pwd.hbs"), { encoding: "utf8" });
 
     const template = handlebars.compile(templateSource);
 
-    const html = template({ name: user.name, resetToken })
+    const html = template({ name: user.name, resetToken, appDomain })
 
     const isSend = await sendMail({
         from: SMTP.FROM_EMAIL,
         to: email,
-        subject: "Reset your password",
+        subject: "Reset your email",
         html
     });
 
@@ -119,7 +154,7 @@ export const resetPassword = async (password, token) => {
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        await User.findOneAndUpdate({ _id: user._id }, { password: hashedPassword }); 
+        await User.findOneAndUpdate({ _id: user._id }, { password: hashedPassword });
         await Session.deleteOne({ userId: user._id })
 
     } catch (error) {
@@ -127,7 +162,7 @@ export const resetPassword = async (password, token) => {
             error.name === 'TokenExpiredError' ||
             error.name === 'JsonWebTokenError'
         ) {
-            throw createHttpError(401, 'Token errorToken is expired or invalid.');
+            throw createHttpError(401, 'Token error. Token is expired or invalid.');
         }
 
         throw error;

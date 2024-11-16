@@ -28,6 +28,6 @@ router.delete('/:id', isValidID, ctrlWrapper(deleteContactController));
 
 router.put('/:id', isValidID, validateBody(contactSchema), ctrlWrapper(upsertContactController));
 
-router.patch('/:id', isValidID, validateBody(contactPatchSchema), ctrlWrapper(patchContactController));
+router.patch('/:id', isValidID, upload.single("photo"),  validateBody(contactPatchSchema), ctrlWrapper(patchContactController));
 
 export default router;

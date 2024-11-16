@@ -9,6 +9,7 @@ import createHttpError from 'http-errors';
 import { parsePaginationParams } from '../utils/parsePaginationParams.js';
 import { parseSortParams } from '../utils/parseSortParams.js'
 import { parseFilterParams } from '../utils/parseFilterParams.js';
+import { saveFileToUploadDir } from '../utils/saveFileToUploadDir.js';
 
 export const getContactsController = async (req, res) => {
   const { page, perPage } = parsePaginationParams(req.query);
@@ -46,6 +47,14 @@ export const getContactByIdController = async (req, res, next) => {
 
 export const createContactController = async (req, res, next) => {
   const { name, phoneNumber, email, isFavourite, contactType } = req.body;
+  const photo = req.file;
+
+  let photoUrl;
+
+  if (photo) {
+    photoUrl = await saveFileToUploadDir(photo);
+  }
+
 
   const contact = {
     name,
@@ -53,6 +62,7 @@ export const createContactController = async (req, res, next) => {
     email,
     isFavourite,
     contactType,
+    photo: photoUrl,
     userId: req.user._id,
   };
 
@@ -95,6 +105,14 @@ export const upsertContactController = async (req, res, next) => {
 export const patchContactController = async (req, res, next) => {
   const { id } = req.params;
 
+  const photo = req.file;
+
+  let photoUrl;
+
+  if (photo) {
+    photoUrl = await saveFileToUploadDir(photo);
+  }
+
   const result = await updateContact(id, req.user._id, req.body);
 
   if (!result) {
@@ -104,6 +122,6 @@ export const patchContactController = async (req, res, next) => {
   res.json({
     status: 200,
     message: `Successfully patched a contact!`,
-    data: result.contact,
+    data: { ...result.contact, photo: photoUrl },
   });
 };

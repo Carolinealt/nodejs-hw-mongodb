@@ -25,17 +25,17 @@ export const registerUser = async (payload) => {
 
     payload.password = await bcrypt.hash(payload.password, 10);
 
-    const jwtToken = createJwtToken({ email: payload.email });
-    const template = handlebars.compile(verifyEmailTemplateSource);
-    const html = template({ appDomain, jwtToken });
-    const verifyEmail = {
-        from: SMTP.FROM_EMAIL,
-        to: payload.email,
-        subject: "Verify email",
-        html,
-    }
+    // const jwtToken = createJwtToken({ email: payload.email });
+    // const template = handlebars.compile(verifyEmailTemplateSource);
+    // const html = template({ appDomain, jwtToken });
+    // const verifyEmail = {
+    //     from: SMTP.FROM_EMAIL,
+    //     to: payload.email,
+    //     subject: "Verify email",
+    //     html,
+    // }
 
-    await sendMail(verifyEmail);
+    // await sendMail(verifyEmail);
 
     return User.create(payload);
 }
@@ -60,10 +60,10 @@ export const loginUser = async ({ email, password }) => {
         throw createHttpError(401, "User not found");
     }
 
-    if (!maybeUser.verify) {
-        throw createHttpError(401, "Email not veriy");
+    // if (!maybeUser.verify) {
+    //     throw createHttpError(401, "Email not veriy");
 
-    }
+    // }
 
     const isMatch = await bcrypt.compare(password, maybeUser.password);
 

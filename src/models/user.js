@@ -17,7 +17,7 @@ const userSchema = new mongoose.Schema({
     },
     verify: {
         type: Boolean,
-        default: false,
+        default: true,
         required: true
     }
 }, { verionKey: false, timestamps: true })

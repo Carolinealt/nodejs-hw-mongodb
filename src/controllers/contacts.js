@@ -55,7 +55,7 @@ export const createContactController = async (req, res, next) => {
   let photoUrl;
 
   if (photo) {
-    if (CLOUDINARY.ENABLE_CLOUDINARY   === 'true') {
+    if (CLOUDINARY.ENABLE_CLOUDINARY === 'true') {
       photoUrl = await saveFileToCloudinary(photo);
     } else {
       photoUrl = await saveFileToUploadDir(photo);
@@ -124,15 +124,16 @@ export const patchContactController = async (req, res, next) => {
     }
   }
 
-  const result = await updateContact(id, req.user._id, req.body);
+  const result = await updateContact(id, req.user._id, { ...req.body, photo: photoUrl }, photoUrl);
 
   if (!result) {
     next(createHttpError(404, 'Contact not found'));
     return;
   }
+
   res.json({
     status: 200,
     message: `Successfully patched a contact!`,
-    data: { ...result.contact, photo: photoUrl },
+    data: result.contact
   });
 };

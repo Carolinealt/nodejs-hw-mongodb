@@ -1,5 +1,3 @@
-#/swagger/paths/contacts/get.yaml
-
 tags:
   - Contacts
 summary: Get list of contacts
@@ -30,32 +28,6 @@ parameters:
       type: string
       enum: ['asc', 'desc']
       example: 'asc'
-  - in: query
-    name: minAvgMark
-    schema:
-      type: number
-      example: 4
-  - in: query
-    name: maxAvgMark
-    schema:
-      type: number
-      example: 10
-  - in: query
-    name: minAge
-    schema:
-      type: number
-      example: 10
-  - in: query
-    name: maxAge
-    schema:
-      type: number
-      example: 16
-  - in: query
-    name: gender
-    schema:
-      type: string
-      enum: ['male', 'female', 'other']
-      example: male
 responses:
   '200':
     description: Successfully found contacts!
@@ -88,7 +60,7 @@ responses:
                 data:
                   type: array
                   items:
-                    $ref: '../../components/schemas/contact.yaml'
+                    $ref: ../../components/schemas/contact.yaml
                 page:
                   type: number
                   example: 2
@@ -109,4 +81,6 @@ responses:
                   example: true
   '401':
     $ref: '../../components/responses/401.yaml'
+  '404':
+    $ref: ../../components/responses/404.yaml
 

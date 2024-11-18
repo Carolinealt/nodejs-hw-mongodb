@@ -27,3 +27,5 @@ export const CLOUDINARY = {
     API_SECRET: process.env.API_SECRET,
     ENABLE_CLOUDINARY: process.env.ENABLE_CLOUDINARY,
 };
+
+export const SWAGGER_PATH = path.resolve("docs", "swagger.json")

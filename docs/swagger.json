@@ -174,8 +174,7 @@
                 "required": [
                   "name",
                   "phoneNumber",
-                  "contactType",
-                  "userId"
+                  "contactType"
                 ],
                 "properties": {
                   "name": {
@@ -350,8 +349,7 @@
                 "required": [
                   "name",
                   "phoneNumber",
-                  "contactType",
-                  "userId"
+                  "contactType"
                 ],
                 "properties": {
                   "name": {
@@ -568,8 +566,7 @@
               "schema": {
                 "type": "object",
                 "required": [
-                  "_id",
-                  "userId"
+                  "_id"
                 ],
                 "properties": {
                   "_id": {

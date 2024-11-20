@@ -19,7 +19,6 @@ requestBody:
         type: object
         required:
           - _id
-          - userId
         properties:
           _id:
             description: "Contact's Id"

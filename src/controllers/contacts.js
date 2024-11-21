@@ -94,7 +94,19 @@ export const deleteContactController = async (req, res, next) => {
 export const upsertContactController = async (req, res, next) => {
   const { id } = req.params;
 
-  const result = await updateContact(id, req.user._id, req.body, { upsert: true });
+  const photo = req.file;
+
+  let photoUrl;
+
+  if (photo) {
+    if (CLOUDINARY.ENABLE_CLOUDINARY === 'true') {
+      photoUrl = await saveFileToCloudinary(photo);
+    } else {
+      photoUrl = await saveFileToUploadDir(photo);
+    }
+  }
+
+  const result = await updateContact(id, req.user._id, { ...req.body, photo: photoUrl }, { upsert: true });
   if (!result) {
     next(createHttpError(404, 'Contact not found'));
     return;

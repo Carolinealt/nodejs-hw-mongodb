@@ -560,25 +560,6 @@
             }
           }
         ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": [
-                  "_id"
-                ],
-                "properties": {
-                  "_id": {
-                    "description": "Contact's Id",
-                    "type": "string",
-                    "example": "65e4decdd286b30065d54af9"
-                  }
-                }
-              }
-            }
-          }
-        },
         "responses": {
           "200": {
             "description": "Deleted contact by id",

@@ -449,7 +449,7 @@
           }
         ],
         "responses": {
-          "200": {
+          "204": {
             "description": "Deleted contact by id",
             "content": {
               "application/json": {
@@ -463,15 +463,7 @@
                   "properties": {
                     "status": {
                       "type": "integer",
-                      "example": 200
-                    },
-                    "message": {
-                      "type": "string",
-                      "example": "Successfully deleted a contact!"
-                    },
-                    "data": {
-                      "type": "object",
-                      "example": {}
+                      "example": 204
                     }
                   }
                 }
